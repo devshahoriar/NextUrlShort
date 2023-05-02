@@ -58,6 +58,9 @@ dependencies:
   react-tooltip:
     specifier: ^5.11.1
     version: 5.11.1(react-dom@18.2.0)(react@18.2.0)
+  short-unique-id:
+    specifier: ^4.4.4
+    version: 4.4.4
   tailwindcss:
     specifier: 3.3.2
     version: 3.3.2
@@ -2442,6 +2445,11 @@ packages:
   /shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+    dev: false
+
+  /short-unique-id@4.4.4:
+    resolution: {integrity: sha512-oLF1NCmtbiTWl2SqdXZQbo5KM1b7axdp0RgQLq8qCBBLoq+o3A5wmLrNM6bZIh54/a8BJ3l69kTXuxwZ+XCYuw==}
+    hasBin: true
     dev: false
 
   /side-channel@1.0.4:

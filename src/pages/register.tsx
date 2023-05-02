@@ -33,8 +33,8 @@ const register = () => {
         },
       })
       if (data.success) router.push('/login?success=true')
-    } catch (error) {
-      setError('Something went wrong. Please try again later.')
+    } catch (error:any) {
+      setError(error.response.data.message || 'Something went wrong.')
     }
   }
   return (

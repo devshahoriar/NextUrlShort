@@ -7,20 +7,31 @@ import Image from 'next/image'
 import img2 from '@/components/2.png'
 import { useRouter } from 'next/router'
 import { getProviders, signIn } from 'next-auth/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const login = () => {
   const router = useRouter()
-
-  useEffect(() => {
-    const run = async () => {
-      const providers = await getProviders()
-      console.log(providers)
-    }
-    run()
-  }, [])
-
   const { success } = router.query
+  const [email, setEmail] = useState<string>()
+  const [password, setPassword] = useState<string>()
+  const [error, setError] = useState<string>()
+  const _hendelSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    if (!email || !password) {
+      setError('Please fill all the fields.')
+      return
+    }
+    const { error, ok } = (await signIn('credentials', {
+      callbackUrl: '/',
+      password: password,
+      email: email,
+      redirect: false,
+    })) as any
+    if (ok) {
+      router.replace('/')
+    }
+    if (error) setError(error)
+  }
   return (
     <div className="h-screen flex flex-col">
       <Header />
@@ -29,13 +40,15 @@ const login = () => {
           Sign In With Email
         </p>
         <div className="mt-10 md:w-80">
-          <form>
+          <form onSubmit={_hendelSubmit}>
             <input
+              onChange={(e) => setEmail(e.target.value)}
               type="email"
               placeholder="Email"
               className="block outline-none text-third bg-third bg-opacity-30 placeholder:text-white my-6 px-2 py-2 rounded-md w-full backdrop-blur-lg"
             />
             <input
+              onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="Password"
               className="block outline-none text-third bg-third bg-opacity-30 placeholder:text-white my-6 px-2 py-2 rounded-md w-full backdrop-blur-lg"
@@ -49,7 +62,8 @@ const login = () => {
             {success && <h1 className="mt-3 text-[green]">Account Created!</h1>}
           </form>
         </div>
-        <div className="mt-10 flex flex-col gap-2">
+        <h1 className="text-[red] mt-6">{error}</h1>
+        <div className="mt-6 flex flex-col gap-2">
           <LoginButton
             onClick={() => signIn('google', { callbackUrl: '/' })}
             icon={<FcGoogle />}

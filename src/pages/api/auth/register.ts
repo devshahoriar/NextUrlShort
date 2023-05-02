@@ -22,11 +22,13 @@ export default async function handler(
       })
       res.status(200).json({ message: 'User created', success: true })
       return
-    } catch (error) {
+    } catch (error: any) {
+      if (error.code == 'P2002') {
+        res.status(400).json({ message: 'Email already exists' })
+        return
+      }
       res.status(400).json({ message: 'Something went wrong' })
       return
     }
   }
-
-
 }

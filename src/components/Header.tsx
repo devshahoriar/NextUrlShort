@@ -4,7 +4,8 @@ import { useSession } from 'next-auth/react'
 
 const Header = () => {
   const { data, status } = useSession()
-
+  console.log(data);
+  
   return (
     <header >
       <div className="container flex justify-between items-center my-6  p-2 md:p-0 sm:p-0">

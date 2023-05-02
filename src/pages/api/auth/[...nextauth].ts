@@ -3,6 +3,8 @@ import NextAuth, { AuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import GithubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
+
+import bcrypt from 'bcryptjs'
 import prisma from '../../../../prisma/db'
 
 export const authOptions: AuthOptions = {
@@ -28,6 +30,7 @@ export const authOptions: AuthOptions = {
       },
       async authorize(credentials, req) {
         const { email, password } = credentials as any
+
         if (email && password) {
           try {
             const user = await prisma.user.findUnique({
@@ -37,21 +40,53 @@ export const authOptions: AuthOptions = {
             })
 
             if (user?.pass === null) {
-              console.log(user)
+              throw new Error('Use another sign in method')
             }
-            throw new Error('Use another sign in method')
-          } catch (error) {}
+            if (bcrypt.compareSync(password, user?.pass as string)) {
+              const u: any = {
+                id: user?.id,
+                name: user?.name,
+                email: user?.email,
+                image: user?.image,
+              }
+
+              return u
+            } else {
+              throw new Error('Wrong password')
+            }
+          } catch (error: any) {
+            if (error.code === 'P2025') {
+              throw new Error('User Not Found')
+            }
+            if (error.message) {
+              throw new Error(error.message)
+            }
+            throw new Error('Something went wrong')
+          }
         }
-
-        // const user = { id: '1', name: 'J Smith', email: 'jsmith@example.com' }
-
-        // if (user) {
-        //   return user
-        // } else {
-        //   return null
-        // }
       },
     }),
   ],
+  callbacks: {
+    async session({
+      session,
+      user,
+      token,
+    }: {
+      session: any
+      user: any
+      token: any
+    }) {
+      session.user.id = user?.id || token?.id
+
+      return session
+    },
+    jwt({ token, user }: any) {
+      if (user?.id) {
+        token.id = user?.id || token?.sub
+      }
+      return token
+    },
+  },
 }
 export default NextAuth(authOptions)

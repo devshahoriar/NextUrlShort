@@ -1,6 +1,5 @@
 import addProtocol from '@/util/addProto'
 import prisma from '../../prisma/db'
-import { NextApiResponse } from 'next'
 
 const id = ({ err }: { err: string }) => {
   return <h1>{err}</h1>

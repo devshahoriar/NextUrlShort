@@ -25,7 +25,6 @@ export default async function handler(
   if (url) {
     const uid = new ShortUniqueId({ length: 6 })
     const urlId = uid()
-    console.log(urlId, url)
     const d = {
       url: url,
       uid: urlId,

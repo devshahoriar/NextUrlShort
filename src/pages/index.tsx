@@ -8,9 +8,18 @@ import { Tooltip } from 'react-tooltip'
 
 export default function Home() {
   const [shortUrl, setShortUrl] = useState<string>()
+  const [url, setUrl] = useState<string>()
+  const [noUrlError, setNoUrlError] = useState<string>()
 
   const _hendelShort = () => {
-    setShortUrl('https://longlonglong.url/long/longggg?l=long')
+    setNoUrlError("")
+    const regex =
+      /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm
+    if (regex.exec(url as string)) {
+      
+    } else {
+      setNoUrlError('Url not valid.')
+    }
   }
   return (
     <div className="flex flex-col h-screen">
@@ -37,6 +46,7 @@ export default function Home() {
           <div className="bg-white bg-opacity-30 backdrop-blur-md mx-2 rounded-md flex gap-2 items-center py-2 z-30 flex-1">
             <span className="h-5 w-5 bg-third  block rounded-full ml-1 xl:ml-2"></span>
             <input
+              onChange={(e) => setUrl(e.target.value)}
               type="text"
               className="outline-none flex-1 mr-2 bg-white bg-opacity-50 rounded-sm xl:text-xl"
               placeholder="Your long Url : https://longlonglong.url/long/longggg?l=long"
@@ -52,16 +62,21 @@ export default function Home() {
         </div>
         <div
           onClick={() => shortUrl && navigator.clipboard.writeText(shortUrl)}
-          data-tooltip-id="gg"
-          data-tooltip-content="Click to copy."
-          className="z-30 mt-3 underline text-secondry font-semibold h-7 cursor-pointer w-fit truncate max-w-full hover:opacity-80"
+          className="z-30 mt-3  h-7 cursor-pointer w-fit truncate max-w-full "
         >
           <Tooltip
             id="gg"
             place="right"
             className="!bg-third !z-50 !opacity-0 md:!opacity-100"
           />
-          {shortUrl}
+          <p
+            data-tooltip-id="gg"
+            data-tooltip-content="Click to copy."
+            className="underline text-secondry font-semibold hover:opacity-80"
+          >
+            {shortUrl}
+          </p>
+          <p className="text-[#FF0000]">{noUrlError}</p>
         </div>
         <p className="text-third text-5xl font-bold mt-3 z-30 md:text-6xl  xl:text-8xl">
           the better.
@@ -78,7 +93,6 @@ export default function Home() {
 }
 
 export const getServerSideProps = () => {
-  
   return {
     props: {}, // will be passed to the page component as props
   }

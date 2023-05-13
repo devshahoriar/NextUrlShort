@@ -88,5 +88,10 @@ export const authOptions: AuthOptions = {
       return token
     },
   },
+  pages: {
+    signIn: '/login',
+  },
 }
+
+
 export default NextAuth(authOptions)

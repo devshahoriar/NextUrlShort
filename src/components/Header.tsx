@@ -4,21 +4,27 @@ import { useSession } from 'next-auth/react'
 
 const Header = () => {
   const { data, status } = useSession()
-  console.log(data);
-  
+
+
   return (
-    <header >
+    <header>
       <div className="container flex justify-between items-center my-6  p-2 md:p-0 sm:p-0">
         <Link href="/">
           <h1 className="text-primary text-3xl font-black xl:text-5xl">urls</h1>
         </Link>
         <div className="flex gap-2 md:gap-4">
           {status === 'authenticated' ? (
+            <Link href='/profile'>
             <img
-              src={data.user?.image as string}
-              className="object-cover h-14 w-14 rounded-full"
+              src={
+                data.user?.image
+                ? data.user?.image
+                : 'https://robohash.org/' + data.user?.name + '.png'
+              }
+              className="object-cover h-14 w-14 rounded-full border border-secondry"
               alt="User"
-            />
+              />
+              </Link>
           ) : (
             <>
               <Link

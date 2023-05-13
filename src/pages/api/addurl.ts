@@ -8,6 +8,7 @@ import { authOptions } from './auth/[...nextauth]'
 type Data = {
   message?: string
   url?: any
+  short?: string
 }
 
 export default async function handler(
@@ -35,7 +36,7 @@ export default async function handler(
       const saveUrl = await prisma.url.create({
         data: d,
       })
-      res.json({ message: 'Url saved', url: saveUrl })
+      res.json({ message: 'Url saved', url: saveUrl, short: saveUrl.uid })
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' })
     }

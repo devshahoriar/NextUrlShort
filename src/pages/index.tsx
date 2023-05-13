@@ -1,5 +1,6 @@
 import img1 from '@/components/1.png'
 import Header from '@/components/Header'
+import axios from 'axios'
 import Image from 'next/image'
 import { useState } from 'react'
 import { BiLeftArrow, BiRightArrow } from 'react-icons/bi'
@@ -11,12 +12,24 @@ export default function Home() {
   const [url, setUrl] = useState<string>()
   const [noUrlError, setNoUrlError] = useState<string>()
 
-  const _hendelShort = () => {
-    setNoUrlError("")
+  const _hendelShort = async () => {
+    setNoUrlError('')
+    setShortUrl('')
     const regex =
       /^((ftp|http|https):\/\/)?(www.)?(?!.*(ftp|http|https|www.))[a-zA-Z0-9_-]+(\.[a-zA-Z]+)+((\/)[\w#]+)*(\/\w+\?[a-zA-Z0-9_]+=\w+(&[a-zA-Z0-9_]+=\w+)*)?$/gm
     if (regex.exec(url as string)) {
-      
+      try {
+        const { data } = await axios({
+          method: 'post',
+          url: '/api/addurl',
+          data: {
+            url: url,
+          },
+        })
+        setShortUrl(window.location.host + '/' + data.short)
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       setNoUrlError('Url not valid.')
     }
@@ -92,8 +105,3 @@ export default function Home() {
   )
 }
 
-export const getServerSideProps = () => {
-  return {
-    props: {}, // will be passed to the page component as props
-  }
-}
